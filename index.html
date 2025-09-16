@@ -4,7 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Multi-Format Link Converter</title>
-    <link rel="stylesheet" href="link formater.css">    
+    <link rel="stylesheet" href="link formater.css">
+    <link rel="stylesheet" href="footer com.css">    
   </head>
   <body>
     <!-- Skip to main content link -->
@@ -126,18 +127,46 @@
       </div>
     </div>
     <!-- Footer with contact info -->
-    <footer id="contact">
+     <div class="footer-com">
+     <footer id="contact">
       <div class="footer-container" role="contentinfo">
         <div class="footer-section">
           <h3>Contact</h3>
-          <p>Email: <a href="mailto:shakeeb.sa.ahmed@gmail.com" aria-label="Email Shakeeb">shakeeb.sa.ahmed@gmail.com</a></p>
-          <p>GitHub: <a href="https://github.com/shakeeb-sa/" target="_blank" rel="noopener noreferrer" aria-label="GitHub Profile">https://github.com/shakeeb-sa/</a></p>
-          <p>LinkedIn: <a href="https://pk.linkedin.com/in/shakeeb-ahmed-034093370" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile">https://pk.linkedin.com/in/shakeeb-ahmed-034093370</a></p>
+          <p>
+            <i class="fas fa-envelope"></i>
+            <a
+              href="mailto:shakeeb.sa.ahmed@gmail.com"
+              aria-label="Email Shakeeb"
+              >shakeeb.sa.ahmed@gmail.com</a
+            >
+          </p>
+          <p>
+            <i class="fab fa-github"></i>
+            <a
+              href="https://github.com/shakeeb-sa/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Github Profile"
+              >github.com/shakeeb-sa</a
+            >
+          </p>
+          <p>
+            <i class="fab fa-linkedin"></i>
+            <a
+              href="https://pk.linkedin.com/in/shakeeb-ahmed-034093370"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn Profile"
+              >linkedin.com/in/shakeeb-ahmed</a
+            >
+          </p>
         </div>
       </div>
-      <p style="margin-top:1rem;">Created by Shakeeb Ahmed</p>
+      <div class="copyright">
+        <p>&copy; <span id="currentYear"></span> 2025 Created by Shakeeb Ahmed</p>
+      </div>
     </footer>
-    
+    </div> 
     <!-- Mobile Menu Toggle Script -->
     <script>
       document.addEventListener('DOMContentLoaded', function() {
