@@ -86,85 +86,87 @@
     }
   }
   
-  // Convert content to different formats
   function convertContent() {
-    let content = editor.innerHTML;
-    
-    // Remove all tags except <a> (if you want to keep only links)
-    // But first, convert block elements to line breaks to preserve paragraph structure
-    content = content.replace(/<(div|p|br)[^>]*>/gi, '\n');
-    content = content.replace(/<\/(div|p)>/gi, '\n\n');
-    
-    // Remove target="_blank" attributes
-    content = content.replace(/\s*target=["']?_blank["']?/gi, '');
-    
-    // Remove all other tags except <a>
-    content = content.replace(/<(?!a\s|\/a)[^>]+>/gi, '');
-    
-    const anchorRegex = /<a\s+href=["']([^"']+)["'][^>]*>(.*?)<\/a>/gi;
-    let refCounter = 1;
-    let refList = '';
-    let linksArray = [];
-    
-    // Extract links for JSON format
-    let match;
-    while ((match = anchorRegex.exec(content)) !== null) {
-      linksArray.push({
-        url: decodeHTML(match[1]),
-        text: decodeHTML(match[2])
-      });
-    }
-    
-    // Reset regex index
-    anchorRegex.lastIndex = 0;
-    
-    // HTML output (decoded)
-    const htmlVersion = decodeHTML(content);
-    
-    // Markdown
-    const markdownVersion = content.replace(anchorRegex, (_, href, text) =>
-      `[${decodeHTML(text)}](${decodeHTML(href)})`
-    );
-    
-    // BBCode
-    const bbcodeVersion = content.replace(anchorRegex, (_, href, text) =>
-      `[url=${decodeHTML(href)}]${decodeHTML(text)}[/url]`
-    );
-    
-    // Raw Text (with preserved paragraph structure)
-    const rawVersion = decodeHTML(content);
-    
-    // Reference Markdown with reference list
-    const refMarkdownVersion = content.replace(anchorRegex, (_, href, text) => {
-      const label = refCounter++;
-      refList += `[${label}]: ${decodeHTML(href)}\n`;
-      return `[${decodeHTML(text)}][${label}]`;
+  let content = editor.innerHTML;
+  
+  // Remove all tags except <a> (if you want to keep only links)
+  // But first, convert block elements to line breaks to preserve paragraph structure
+  content = content.replace(/<(div|p|br)[^>]*>/gi, '\n');
+  content = content.replace(/<\/(div|p)>/gi, '\n\n');
+  
+  // Remove target="_blank" attributes
+  content = content.replace(/\s*target=["']?_blank["']?/gi, '');
+  
+  // Remove all other tags except <a>
+  content = content.replace(/<(?!a\s|\/a)[^>]+>/gi, '');
+  
+  const anchorRegex = /<a\s+href=["']([^"']+)["'][^>]*>(.*?)<\/a>/gi;
+  let refCounter = 1;
+  let refList = '';
+  let linksArray = [];
+  
+  // Extract links for JSON format
+  let match;
+  while ((match = anchorRegex.exec(content)) !== null) {
+    linksArray.push({
+      url: decodeHTML(match[1]),
+      text: decodeHTML(match[2])
     });
-    
-    // JSON format
-    const jsonVersion = JSON.stringify(linksArray, null, 2);
-    
-    // Slack format
-    const slackVersion = content.replace(anchorRegex, (_, href, text) =>
-      `<${decodeHTML(href)}|${decodeHTML(text)}>`
-    );
-    
-    // Assign outputs
-    htmlOutput.textContent = htmlVersion;
-    markdownOutput.textContent = decodeHTML(markdownVersion);
-    bbcodeOutput.textContent = decodeHTML(bbcodeVersion);
-    rawOutput.textContent = decodeHTML(rawVersion);
-    refmdOutput.textContent = decodeHTML(refMarkdownVersion + "\n\n" + refList.trim());
-    jsonOutput.textContent = jsonVersion;
-    slackOutput.textContent = decodeHTML(slackVersion);
-    
-    outputSection.style.display = 'block';
-    
-    // Save to history if links exist
-    if (linksArray.length > 0) {
-      saveToHistory(linksArray);
-    }
   }
+  
+  // Reset regex index
+  anchorRegex.lastIndex = 0;
+  
+  // HTML output (decoded)
+  const htmlVersion = decodeHTML(content);
+  
+  // Markdown
+  const markdownVersion = content.replace(anchorRegex, (_, href, text) =>
+    `[${decodeHTML(text)}](${decodeHTML(href)})`
+  );
+  
+  // BBCode
+  const bbcodeVersion = content.replace(anchorRegex, (_, href, text) =>
+    `[url=${decodeHTML(href)}]${decodeHTML(text)}[/url]`
+  );
+  
+  // Raw Text (with preserved paragraph structure) - FIXED
+  let rawVersion = content.replace(anchorRegex, (_, href, text) =>
+    `[${decodeHTML(href)} ${decodeHTML(text)}]`
+  );
+  rawVersion = decodeHTML(rawVersion).replace(/<[^>]+>/gi, '');
+  
+  // Reference Markdown with reference list
+  const refMarkdownVersion = content.replace(anchorRegex, (_, href, text) => {
+    const label = refCounter++;
+    refList += `[${label}]: ${decodeHTML(href)}\n`;
+    return `[${decodeHTML(text)}][${label}]`;
+  });
+  
+  // JSON format
+  const jsonVersion = JSON.stringify(linksArray, null, 2);
+  
+  // Slack format
+  const slackVersion = content.replace(anchorRegex, (_, href, text) =>
+    `<${decodeHTML(href)}|${decodeHTML(text)}>`
+  );
+  
+  // Assign outputs
+  htmlOutput.textContent = htmlVersion;
+  markdownOutput.textContent = decodeHTML(markdownVersion);
+  bbcodeOutput.textContent = decodeHTML(bbcodeVersion);
+  rawOutput.textContent = rawVersion;
+  refmdOutput.textContent = decodeHTML(refMarkdownVersion + "\n\n" + refList.trim());
+  jsonOutput.textContent = jsonVersion;
+  slackOutput.textContent = decodeHTML(slackVersion);
+  
+  outputSection.style.display = 'block';
+  
+  // Save to history if links exist
+  if (linksArray.length > 0) {
+    saveToHistory(linksArray);
+  }
+}
   
   // Save conversion to history
   function saveToHistory(links) {
